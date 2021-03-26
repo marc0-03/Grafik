@@ -22,9 +22,10 @@ public class Grafik extends Canvas implements Runnable {
     private int Green[] = new int[54];
     private int Blue[] = new int[54];
     private int i, n, t;
-    private int Score, carV;
+    private int Score, Lives, carV;
     private int sneak;
-    private boolean Alive, Wc, Ac, Sc, Dc = true;
+    private boolean Wc, Ac, Sc, Dc;
+    private boolean Alive = true;
 
     public Grafik() {
         JFrame frame = new JFrame("A new painting");
@@ -44,6 +45,7 @@ public class Grafik extends Canvas implements Runnable {
         Dc = true;
         Sc = true;
         t=0;
+        Lives=3;
 
         sneak=1;
         for (i=0; i<Cary.length; i++) {
@@ -88,31 +90,31 @@ public class Grafik extends Canvas implements Runnable {
             if (carV<11) {
                 carV += 1;
             }
-            System.out.println(sneak);
             for (i=0; i<Carx.length; i++) {
                 Carx[i]= (int) Math.round(Math.random()*940)-70;
                 Red[i] = (int) Math.round(Math.random()*100)+80;
                 Green[i] = (int) Math.round(Math.random()*100)+80;
                 Blue[i] = (int) Math.round(Math.random()*100)+80;
             }
-        }
+        }               //Check if you are @ the end
 
-        if ( 0 < Frogx && Frogxv<0) {
-        Frogx += (Frogxv / sneak);
+        if (Alive) {
+            if (0 < Frogx && Frogxv < 0) {
+                Frogx += (Frogxv / sneak);
+            }    //Frog moving boundaries
+            if (760 > Frogx && Frogxv > 0) {
+                Frogx += (Frogxv / sneak);
+            }   //Frog moving boundaries
+            if (550 > Frogy && Frogyv > 0) {
+                Frogy += (Frogyv / sneak);
+            }  //Frog moving boundaries
+            if (0 < Frogy && Frogyv < 0) {
+                Frogy += (Frogyv / sneak);
+            }    //Frog moving boundaries
         }
-        if (760 > Frogx && Frogxv>0) {
-            Frogx += (Frogxv / sneak);
-        }
-        if ( 550 > Frogy && Frogyv>0) {
-        Frogy += (Frogyv / sneak);
-        }
-        if ( 0 < Frogy && Frogyv<0) {
-            Frogy += (Frogyv / sneak);
-        }
-
 
         n=0;
-        if (t==2) {
+        if (t==2) { //Moves cars depending on their Y coordinate
         while (n<Carx.length) {
             if (Cary[n] == 94 || Cary[n] == 282) {
                 Carx[n] -= carV+1;
@@ -136,6 +138,21 @@ public class Grafik extends Canvas implements Runnable {
         }
         t++;
 
+        n=0;
+
+        Rectangle rect1 = new Rectangle(Frogx+5, Frogy, 31, 35);
+        while (n<Carx.length) { //Colision check for frog vs car
+            Rectangle rect2 = new Rectangle(Carx[n], Cary[n]+2, 70, 30);
+            if (rect1.intersects(rect2)) {
+                Lives -= 1;
+                Frogy=550;
+                if (Lives<0) {
+                    Alive=false;
+                }
+            }
+            n++;
+        }
+
     }
 
 
@@ -148,7 +165,6 @@ public class Grafik extends Canvas implements Runnable {
         Graphics g = bs.getDrawGraphics();
 
         update();
-        g.setColor(new Color(200,255,255));
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0,0,800,600);
         g.setColor(Color.gray);
@@ -158,6 +174,27 @@ public class Grafik extends Canvas implements Runnable {
             drawCarleft1(g, Carx[i], Cary[i]);
         }
         drawFrog(g, Frogx,Frogy);
+
+        if (Lives>0) {
+            g.setColor(Color.red);
+            if (Lives==3){
+                g.fillOval(630,5,50,50);
+                g.fillOval(685,5,50,50);
+                g.fillOval(740,5,50,50);
+            } else if (Lives==2){
+                g.fillOval(685,5,50,50);
+                g.fillOval(740,5,50,50);
+            } else {
+                g.fillOval(740,5,50,50);
+            }
+        }
+
+        if (Alive == false){
+            g.setColor(new Color(169,169,169));
+            g.fillRect(0,0,800,600);
+            g.setColor(new Color(150,150,150));
+            g.fillRoundRect(100,100,600,100,20,20);
+        }
 
         g.dispose();
         bs.show();
@@ -226,6 +263,23 @@ public class Grafik extends Canvas implements Runnable {
 
         @Override
         public void keyTyped(KeyEvent e) {
+            if (e.getKeyChar()== 'r' || e.getKeyChar()== 'R') {
+                if (Alive==false) {
+                    Alive=true;
+                    Lives=3;
+                    Score=0;
+                    carV=1;
+                    Frogx = 400;
+                    Frogy = 550;
+                    for (i=0; i<Carx.length; i++) {
+                        Carx[i]= (int) Math.round(Math.random()*940)-70;
+                        Red[i] = (int) Math.round(Math.random()*100)+80;
+                        Green[i] = (int) Math.round(Math.random()*100)+80;
+                        Blue[i] = (int) Math.round(Math.random()*100)+80;
+                    }
+
+                }
+            }
             if (e.getKeyChar()== 'a' || e.getKeyChar()== 'A') {
                 if (Ac) {
                     Frogxv += -6;
