@@ -86,7 +86,7 @@ public class Grafik extends Canvas implements Runnable {
     public void update() {
         if (Frogy <= 10) {
             Frogy = 550;
-            Score += 1000*carV;
+            Score += 1000*(carV*0.5+0.5) + Math.round(Math.random()*10)*50;
             if (carV<11) {
                 carV += 1;
             }
@@ -96,7 +96,7 @@ public class Grafik extends Canvas implements Runnable {
                 Green[i] = (int) Math.round(Math.random()*100)+80;
                 Blue[i] = (int) Math.round(Math.random()*100)+80;
             }
-        }               //Check if you are @ the end
+        }               //Check if you are att the end
 
         if (Alive) {
             if (0 < Frogx && Frogxv < 0) {
@@ -146,6 +146,7 @@ public class Grafik extends Canvas implements Runnable {
             if (rect1.intersects(rect2)) {
                 Lives -= 1;
                 Frogy=550;
+                n=100;
                 if (Lives<0) {
                     Alive=false;
                 }
@@ -175,6 +176,10 @@ public class Grafik extends Canvas implements Runnable {
         }
         drawFrog(g, Frogx,Frogy);
 
+        g.setFont(new Font("serif", Font.BOLD, 30));
+        g.setColor(Color.DARK_GRAY);
+        g.drawString("Score:" + Score, 10,40);
+
         if (Lives>0) {
             g.setColor(Color.red);
             if (Lives==3){
@@ -194,6 +199,11 @@ public class Grafik extends Canvas implements Runnable {
             g.fillRect(0,0,800,600);
             g.setColor(new Color(150,150,150));
             g.fillRoundRect(100,100,600,100,20,20);
+            g.fillRoundRect(140,300,520,100,20,20);
+            g.setFont(new Font("serif", Font.BOLD, 60));
+            g.setColor(Color.DARK_GRAY);
+            g.drawString("Score:" + Score,110, 170);
+            g.drawString("'R' to restart", 225, 370);
         }
 
         g.dispose();
