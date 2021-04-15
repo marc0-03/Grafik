@@ -274,7 +274,7 @@ public class Grafik extends Canvas implements Runnable {
         @Override
         public void keyTyped(KeyEvent e) {
             if (e.getKeyChar()== 'r' || e.getKeyChar()== 'R') {
-                if (Alive==false) {
+                if (!Alive) {
                     Alive=true;
                     Lives=3;
                     Score=0;
